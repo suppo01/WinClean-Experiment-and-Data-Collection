@@ -1,1 +1,10 @@
-
+"cd C://Users//molly//github>//COM1"
+"cd /molly\c/<>"
+"cd C:/Users/user\\github"
+"cd /Users/molly/github/TL_Stuff"
+"cd //Users\molly://AUX"
+"cd C:\Users\molly\github"
+"cd C:/molly/|TL_Stuff|/NUL"
+"cd \\/github/\LPT10?"
+"cd C:\\github\\CON\\TL_Stuff?|>"
+"cd \TL_Stuff/abc\PRN/9?9?9"
