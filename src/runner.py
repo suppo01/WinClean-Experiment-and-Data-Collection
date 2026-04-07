@@ -20,6 +20,34 @@ def run_winclean(path, mode="static"):
     fix = lines[-1] if lines else None
     return fix
 
+def run_path_command_in_venv(command, venv_path="winclean_venv"):
+    """Run a path command (like cd, dir) in a venv."""
+    
+    # Create venv if needed
+    if not os.path.exists(venv_path):
+        subprocess.run(["python", "-m", "venv", venv_path], check=True)
+    
+    # Use cmd to run the command
+    if os.name == "nt":
+        cmd_path = os.path.join(venv_path, "Scripts", "cmd.exe")
+        result = subprocess.run(
+            [cmd_path, "/c", command],
+            capture_output=True,
+            text=True
+        )
+    else:
+        result = subprocess.run(
+            command,
+            shell=True,
+            capture_output=True,
+            text=True
+        )
+    
+    errors = result.stderr if result.stderr else None
+    return {
+        "stderr": result.stderr,
+        "errors": errors
+    }
 
 def winclean_recursive(path, pass_counter=0):
     """Recursively fix path bugs until resolved."""
@@ -29,7 +57,7 @@ def winclean_recursive(path, pass_counter=0):
     winclean_output = run_winclean(path)
 
     # Run the result from WinClean in a Venv and collect any errors
-    venv_errors = 
+    venv_errors = run_path_command_in_venv(winclean_output)
     
     # Check for the number of errors
     if venv_errors is None:
