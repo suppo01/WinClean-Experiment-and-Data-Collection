@@ -1,30 +1,63 @@
-def main():
-  """Runner for experiments regarding the performance of WinClean"""
-  # Initialize the counter for passes
-  pass_counter = 0
-  # Read in the input into a list
+import subprocess
 
-  # Loop through the inputs
-  for path in paths:
-    # Run the input through WinClean
-    winclean_output = ""
-    # Increment the counter after the pass through WinClean
+def run_winclean(path, mode="static"):
+    """Run WinClean CLI on a path command."""
+    cmd = [
+        "winclean",
+        "--mode", mode,
+        "--path-command", path
+    ]
+    
+    result = subprocess.run(
+        cmd,
+        capture_output=True,
+        text=True,
+        timeout=120
+    )
+
+    # Extract the last non-empty line as the fix
+    lines = [line.strip() for line in result.stdout.split('\n') if line.strip()]
+    fix = lines[-1] if lines else None
+    return fix
+
+
+def winclean_recursive(path, pass_counter=0):
+    """Recursively fix path bugs until resolved."""
     pass_counter += 1
+    
+    # Run the input through WinClean
+    winclean_output = run_winclean(path)
+
     # Run the result from WinClean in a Venv and collect any errors
-    venv_errors = ""
+    venv_errors = 
+    
     # Check for the number of errors
     if venv_errors is None:
-      # Print output to terminal
-      print(f"Here is the solution offered by WinClean: /n/n{winclean_output}")
-      # Print final counter to terminal
-      plural = ""
-      if pass_counter > 1:
-        plural = "es"
-      print(f"The input was cleaned in {pass_counter} pass{plural}")
-      # Write the input, the number of passes, and the types of bugs to the csv file
-      data_to_csv = ""
+        # Success - print output
+        print(f"Here is the solution offered by WinClean:\n\n{winclean_output}")
+        plural = "es" if pass_counter > 1 else ""
+        print(f"The input was cleaned in {pass_counter} pass{plural}")
+        
+        # Write to CSV
+        with open("output.csv", "w", newline="", encoding="utf-8") as f:
+          writer = csv.DictWriter(f, fieldnames=["fix", "passes", "errors"])
+          writer.writeheader()
+          writer.writerows(winclean_output, pass_counter, venv_errors)
+        return pass_counter, data_to_csv
     else:
-      # Print attempt to terminal
-      print(f"Here is the attempted solution offered by WinClean: /n/n{winclean_output} /n/nTrying Again...")
-      # Send the failed attempt back through WinClean and try again
-      winclean_output = ""
+        # Try again recursively
+        print(f"Attempt {pass_counter} failed. Trying again...")
+        return winclean_recursive(winclean_output, pass_counter)
+
+
+def main():
+    """Runner for experiments regarding the performance of WinClean"""
+    pass_counter = 0
+    
+    # Read in the input into a list
+    with open("input.txt", "r", encoding="utf-8") as f:
+        paths = [line.strip() for line in f if line.strip()]
+    
+    # Loop through the inputs
+    for path in paths:
+        winclean_recursive(path)
