@@ -1,1 +1,11 @@
-
+original,fix,passes,status
+"""cd C://Users//molly//github>//COM1""",,1,failed
+"""cd /molly\c/<>""",,1,failed
+"""cd C:/Users/user\\github""",,1,failed
+"""cd /Users/molly/github/TL_Stuff""",,1,failed
+"""cd //Users\molly://AUX""",,1,failed
+"""cd C:\Users\molly\github""",,1,failed
+"""cd C:/molly/|TL_Stuff|/NUL""",,1,failed
+"""cd \\/github/\LPT10?""",,1,failed
+"""cd C:\\github\\CON\\TL_Stuff?|>""",,1,failed
+"""cd \TL_Stuff/abc\PRN/9?9?9""",,1,failed
